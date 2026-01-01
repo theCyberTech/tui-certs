@@ -10,171 +10,111 @@
 
 ## Description
 
-TUI Certificate Extractor is a lightweight, terminal-based tool that simplifies the process of retrieving and analyzing TLS/SSL certificate chains from any remote server. Whether you're a security professional auditing certificate configurations, a developer debugging HTTPS issues, or a sysadmin managing certificate deployments, this tool provides a fast, intuitive interface for inspecting the complete certificate chain without leaving your terminal.
+TUI Certificate Extractor is a lightweight, terminal-based tool that simplifies the process of retrieving and analyzing TLS/SSL certificate chains from any remote server. It features a modular architecture, robust certificate parsing using the `cryptography` library, and a polished interactive TUI.
 
-Built entirely with Python's standard library, it requires no external dependencies and works seamlessly across Linux, macOS, and Windows platforms.
+---
+
+## Features
+
+- **Full Certificate Chain Extraction** - Retrieve the complete chain including leaf certificate and all intermediate CA certificates.
+- **Interactive TUI** - Navigate with keyboard shortcuts using a polished curses-based interface.
+- **Detailed Certificate Analysis** - View subject, issuer, validity dates, serial number, signature algorithm, SANs, and more.
+- **Expiration Detection** - Quickly identify expired certificates with visual indicators and color-coded warnings.
+- **Selective Saving** - Save individual certificates or the entire chain as PEM-encoded files.
+- **JSON Export** - Export certificate details to JSON format for automated processing.
+- **Batch Processing** - Process multiple hostnames from a file and automatically save/export results.
+- **Cross-Platform Support** - Works on Linux, macOS, and Windows (with fallback text interface).
+- **Zero Configuration** - Sensible defaults that work out of the box.
 
 ---
 
 ## Table of Contents
 
 - [Features](#features)
-- [Screenshots](#screenshots)
-- [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Configuration](#configuration)
-- [Contributing](#contributing)
+- [Development](#development)
 - [License](#license)
-- [Acknowledgments](#acknowledgments)
-
----
-
-## Features
-
-- **Full Certificate Chain Extraction** - Retrieve the complete chain including leaf certificate and all intermediate CA certificates
-- **Interactive TUI** - Navigate with keyboard shortcuts using a polished curses-based interface
-- **Detailed Certificate Analysis** - View subject, issuer, validity dates, serial number, signature algorithm, SANs, and more
-- **Expiration Detection** - Quickly identify expired certificates with visual indicators
-- **Selective Saving** - Save individual certificates or the entire chain as PEM-encoded files
-- **Certificate Management** - Browse, view, and delete previously saved certificates
-- **Cross-Platform Support** - Works on Linux, macOS, and Windows (with fallback text interface)
-- **SNI Support** - Proper Server Name Indication for virtual hosting environments
-- **Zero Dependencies** - Uses only Python standard library modules
-- **Fallback Mode** - Graceful degradation to simple text interface when curses is unavailable
-
----
-
-## Screenshots
-
-### Main Menu
-```
-┌────────────────────────────────────────────────────────────────┐
-│  TUI Certificate Extractor                                     │
-├────────────────────────────────────────────────────────────────┤
-│                                                                │
-│   > Extract Certificate Chain                                  │
-│     View Saved Certificates                                    │
-│     Help / Usage                                               │
-│     Exit                                                       │
-│                                                                │
-├────────────────────────────────────────────────────────────────┤
-│  [Up/Down] Navigate  [Enter] Select  [q] Back/Exit             │
-└────────────────────────────────────────────────────────────────┘
-```
-
-### Certificate Details View
-```
-================================================================================
-                            Certificate [0]
-================================================================================
-
-Subject:
-  commonName: example.com
-  organizationName: Example Inc
-
-Issuer:
-  commonName: DigiCert TLS RSA SHA256 2020 CA1
-  organizationName: DigiCert Inc
-
-Validity:
-  Not Before: Jan 15 00:00:00 2024 GMT
-  Not After:  Jan 15 23:59:59 2025 GMT
-  Status:     Valid
-
-Technical Details:
-  Serial Number: 0A1B2C3D4E5F...
-  Version: 3
-  Signature Algorithm: sha256WithRSAEncryption
-  Is CA: False
-```
-
----
-
-## Prerequisites
-
-- **Python 3.6+** - The application requires Python 3.6 or later
-- **OpenSSL** (recommended) - For full certificate chain extraction
-  - Without OpenSSL, only the leaf certificate can be retrieved
-  - Most Linux and macOS systems have OpenSSL pre-installed
-  - Windows users can install OpenSSL via [Chocolatey](https://chocolatey.org/): `choco install openssl`
-- **windows-curses** (Windows only, optional) - For the full TUI experience
-  ```bash
-  pip install windows-curses
-  ```
 
 ---
 
 ## Installation
 
-### Quick Start
-
-1. **Clone or download** the repository:
-   ```bash
-   git clone https://github.com/yourusername/tui-certs.git
-   cd tui-certs
-   ```
-
-2. **Run the application** directly (no installation required):
-   ```bash
-   python3 tui_certs.py
-   ```
-
-### Make Executable (Linux/macOS)
+### From Source
 
 ```bash
-chmod +x tui_certs.py
-./tui_certs.py
+git clone https://github.com/yourusername/tui-certs.git
+cd tui-certs
+pip install .
 ```
-
-### Verify OpenSSL (optional but recommended)
-
-```bash
-openssl version
-# Should output something like: OpenSSL 3.x.x
-```
-
----
 
 ## Usage
 
-### Interactive Mode
+### Interactive TUI
 
-Launch the application without arguments for the full interactive TUI:
+Launch the full interactive interface:
 
 ```bash
-python3 tui_certs.py
+tui-certs
+```
+
+### Batch Processing
+
+Extract certificates for a list of hosts:
+
+```bash
+tui-certs --batch hosts.txt
+```
+
+### Simple Mode
+
+Force the simple text-based interface:
+
+```bash
+tui-certs --simple
 ```
 
 ### Command-Line Options
 
-```bash
-# Display help and documentation
-python3 tui_certs.py --help
-python3 tui_certs.py -h
-
-# Show version information
-python3 tui_certs.py --version
-
-# Force simple text interface (no curses)
-python3 tui_certs.py --simple
-```
+| Option           | Description                             |
+| ---------------- | --------------------------------------- |
+| `--batch <file>` | Process hostnames from a text file      |
+| `--simple`       | Force simple text interface (no curses) |
+| `--version`      | Show version information                |
+| `--help`         | Show help message                       |
 
 ### Keyboard Navigation
 
-| Key | Action |
-|-----|--------|
-| `Up` / `k` | Move selection up |
-| `Down` / `j` | Move selection down |
-| `Enter` | Select / Confirm |
-| `q` / `Esc` | Go back / Cancel |
-| `Space` | Toggle selection (in multi-select mode) |
-| `s` | Save current certificate |
-| `p` | Show PEM content |
-| `d` | Delete saved certificate |
-| `a` | Select all |
-| `n` | Select none |
-| `PgUp` / `PgDn` | Scroll pages |
+| Key          | Action                             |
+| ------------ | ---------------------------------- |
+| `Up` / `k`   | Move selection up                  |
+| `Down` / `j` | Move selection down                |
+| `Enter`      | Select / Confirm                   |
+| `q` / `Esc`  | Go back / Cancel                   |
+| `s`          | Save current certificate           |
+| `p`          | Show PEM content                   |
+| `j`          | Export chain to JSON (when in TUI) |
+
+---
+
+## Development
+
+### Prerequisites
+
+- Python 3.6+
+- `cryptography` library (installed automatically via `pip install .`)
+
+### Running Tests
+
+```bash
+pytest tests/
+```
+
+### Project Structure
+
+- `tui_certs/core/`: Business logic (models, extractor, storage)
+- `tui_certs/tui.py`: Curses-based interface
+- `tui_certs/cli.py`: CLI entry point and simple interface
 
 ### Example Workflow
 
@@ -193,10 +133,10 @@ python3 tui_certs.py --simple
 
 By default, certificates are saved to:
 
-| Platform | Default Path |
-|----------|--------------|
-| Linux/macOS | `~/.tui_certs/` |
-| Windows | `C:\Users\<username>\.tui_certs\` |
+| Platform    | Default Path                      |
+| ----------- | --------------------------------- |
+| Linux/macOS | `~/.tui_certs/`                   |
+| Windows     | `C:\Users\<username>\.tui_certs\` |
 
 Certificates are organized in subdirectories by hostname:
 
@@ -238,6 +178,7 @@ Contributions are welcome! Here's how you can help:
 ### Reporting Issues
 
 Please include:
+
 - Python version (`python3 --version`)
 - Operating system and version
 - OpenSSL version (`openssl version`)

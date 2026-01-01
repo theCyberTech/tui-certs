@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tui-certs"
+version = "1.1.0"
+description = "A TUI for extracting TLS certificate chains"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {text = "MIT"}
+authors = [
+    {name = "TUI Certificate Extractor"}
+]
+dependencies = [
+    "cryptography>=3.4.0",
+]
+
+[project.scripts]
+tui-certs = "tui_certs.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tui_certs*"]
